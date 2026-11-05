@@ -1,0 +1,421 @@
+/*
+  Black display case: the page is pure black and the colour comes from the watches.
+  Bodoni Moda is set large, with the fine hairlines you see engraved on a dial.
+  Hanken Grotesk carries everything that has to be read quickly.
+*/
+:root {
+  --void: #000000;
+  --text: #f6f5f1;
+  --muted: #a5a39d;
+  --gutter: clamp(20px, 3vw, 44px);
+  --display: 'Bodoni Moda Variable', 'Didot', 'Bodoni 72', Georgia, serif;
+  --body: 'Hanken Grotesk Variable', 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+/* Only on html: a body background would paint over the title behind the canvas */
+html {
+  background: var(--void);
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+body {
+  color: var(--text);
+  font-family: var(--body);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The watch stays fixed behind the page while the text scrolls past it */
+.stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Sits behind the transparent 3D canvas, so the watch passes in front of the words */
+.display-title {
+  position: absolute;
+  z-index: -1;
+  top: clamp(72px, 11vh, 110px);
+  left: calc(var(--gutter) - 0.04em);
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: min(12.8vw, 25vh);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+}
+
+.display-title span {
+  display: block;
+}
+
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 3;
+  /* Fades to black so the links stay readable over close-ups and scrolling text */
+  background: linear-gradient(to bottom, #000 62%, transparent);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: clamp(16px, 2.4vh, 26px) var(--gutter) clamp(28px, 4vh, 40px);
+  font-size: 15px;
+}
+
+.site-header nav {
+  display: flex;
+  align-items: baseline;
+  gap: 28px;
+}
+
+.site-header a,
+.site-footer a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.site-header nav a:hover,
+.site-footer a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+/* Any empty part of the page can be dragged to turn the watch. pan-y leaves
+   vertical swipes to scroll the page on a phone. */
+.track {
+  position: relative;
+  z-index: 1;
+  cursor: grab;
+  touch-action: pan-y pinch-zoom;
+}
+
+.is-turning,
+.is-turning * {
+  cursor: grabbing !important;
+  user-select: none;
+}
+
+.caption {
+  cursor: auto;
+}
+
+/* Solid, so it slides up and covers the watch at the end of the page */
+.site-footer {
+  position: relative;
+  z-index: 2;
+  background: var(--void);
+  border-top: 1px solid #34332f;
+  padding: clamp(48px, 8vh, 88px) var(--gutter) 28px;
+}
+
+.footer-brand {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: clamp(64px, 11vw, 168px);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 40px clamp(24px, 5vw, 80px);
+  margin-top: clamp(40px, 7vh, 72px);
+}
+
+.footer-columns h2 {
+  margin-bottom: 14px;
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.footer-columns ul {
+  display: grid;
+  gap: 10px;
+  padding: 0;
+  list-style: none;
+  font-size: 17px;
+}
+
+.footer-columns li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 17rem;
+}
+
+.footer-columns li span {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px 32px;
+  margin-top: clamp(40px, 7vh, 72px);
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.footer-credit {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  color: var(--text);
+}
+
+.footer-credit a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Heights match the shot times in scene/pose.js */
+.chapter {
+  position: relative;
+  padding-inline: var(--gutter);
+}
+
+.chapter-hero {
+  height: 100vh;
+}
+
+.chapter-dial,
+.chapter-seconds,
+.chapter-product {
+  height: 140vh;
+}
+
+.chapter-crown,
+.chapter-whole {
+  height: 120vh;
+}
+
+.chapter-layers {
+  height: 220vh;
+}
+
+.caption {
+  position: sticky;
+  top: 32vh;
+  width: min(23rem, 100%);
+}
+
+.caption-hero {
+  position: absolute;
+  top: auto;
+  bottom: var(--gutter);
+  left: var(--gutter);
+  width: min(23rem, calc(100% - 2 * var(--gutter)));
+}
+
+.caption h2 {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-size: clamp(40px, 4.6vw, 66px);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+
+.caption p {
+  margin-top: 16px;
+  max-width: 21rem;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.caption-hero p {
+  margin-top: 0;
+}
+
+.caption-hero .hint {
+  margin-top: 14px;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+.caption .price {
+  margin-top: 20px;
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+}
+
+.chapter-product .caption h2 {
+  font-size: clamp(52px, 6.4vw, 92px);
+}
+
+.action {
+  display: inline-block;
+  min-width: 13.5rem;
+  margin-top: 22px;
+  padding: 15px 22px;
+  border: 1px solid var(--text);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text);
+  font: 500 16px/1 var(--body);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.action:hover {
+  background: var(--text);
+  color: var(--void);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 3px;
+}
+
+/* Names the parts of the watch while it is apart */
+.part-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--text);
+  white-space: nowrap;
+  opacity: 0;
+}
+
+.part-label::before {
+  content: '';
+  width: 26px;
+  height: 1px;
+  background: var(--muted);
+}
+
+.no-webgl {
+  position: absolute;
+  top: 40%;
+  left: var(--gutter);
+  right: var(--gutter);
+  font-size: 17px;
+}
+
+@media (max-width: 720px) {
+  /* The strap runs behind the text on a phone, so it fades out first */
+  .stage::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 46%;
+    background: linear-gradient(to bottom, transparent, #000 40%);
+  }
+
+  /* On a phone the title sits below the watch, on top of the fade */
+  .display-title {
+    top: auto;
+    z-index: 1;
+    bottom: calc(100svh - 100vh + 196px);
+    font-size: 17vw;
+    pointer-events: none;
+  }
+
+  .site-header {
+    font-size: 14px;
+  }
+
+  .site-header nav {
+    gap: 14px;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-columns li {
+    max-width: none;
+  }
+
+  /* Holds in the faded area below the watch */
+  .caption {
+    top: 64vh;
+    width: 100%;
+  }
+
+  .caption-hero {
+    top: auto;
+    width: calc(100% - 2 * var(--gutter));
+  }
+
+  .caption-product {
+    top: 58vh;
+  }
+
+  .caption h2 {
+    font-size: 38px;
+  }
+
+  .chapter-product .caption h2 {
+    font-size: 46px;
+  }
+
+  .caption p {
+    margin-top: 10px;
+    font-size: 16px;
+  }
+
+  .caption .price {
+    margin-top: 12px;
+    font-size: 26px;
+  }
+
+  .action {
+    margin-top: 14px;
+  }
+
+  .part-label {
+    font-size: 13px;
+    gap: 5px;
+  }
+
+  .part-label::before {
+    width: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .action {
+    transition: none;
+  }
+}
